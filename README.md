@@ -4,9 +4,8 @@
 
 ### 服务端
 
-+ GO:Gin
+在服务端，我准备使用Rust来编写接口，并使用postgreSQL来组织数据
 
 ### 客户端
 
-+ Solidjs
-
+在前端，我暂时准备使用solidjs来编写UI界面
