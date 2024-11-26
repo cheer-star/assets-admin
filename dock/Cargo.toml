@@ -1,5 +1,5 @@
 [package]
-name = "hello-rs"
+name = "dock"
 version = "0.1.0"
 edition = "2021"
 

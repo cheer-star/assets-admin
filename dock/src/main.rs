@@ -13,5 +13,4 @@ fn rocket() -> _ {
     rocket::build()
         .mount("/", routes![index])
         .mount("/public", FileServer::from("static"))
-
 }
