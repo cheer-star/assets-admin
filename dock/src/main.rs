@@ -2,11 +2,10 @@
 extern crate rocket;
 
 use rocket::fs::FileServer;
-// use futures::executor::block_on;
-
-
 use sqlx::postgres::PgPoolOptions;
-// use sqlx::Row;
+
+// mod database;
+mod interface;
 
 async fn db() -> Result<(), sqlx::Error> {
     let pool = PgPoolOptions::new()
@@ -14,29 +13,21 @@ async fn db() -> Result<(), sqlx::Error> {
         .connect("postgres://postgres:mapinxue@localhost/assets")
         .await?;
 
-    let row = sqlx::query("select * from users;")
-        .fetch_one(&pool)
-        .await?;
+    let row = sqlx::query("select * from users;").fetch_one(&pool).await?;
 
     println!("any find");
     println!("Got: {:?}", row);
 
+    // init::get_database();
+
     Ok(())
-}
-
-#[get("/")]
-async fn index() -> &'static str {
-    println!("hello world");
-    let res = db().await;
-
-    let _ = res.inspect_err(|e| eprintln!("failed to read file: {e}"));
-
-    "Hello, world!"
 }
 
 #[launch]
 fn rocket() -> _ {
+    // mount 后面的路径是 /login  /注释的路径的组合
     rocket::build()
-        .mount("/", routes![index])
+        .mount("/", routes![interface::index])
+        .mount("/login", routes![interface::users::login])
         .mount("/public", FileServer::from("static"))
 }
