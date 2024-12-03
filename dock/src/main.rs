@@ -1,18 +1,15 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket::fs::FileServer;
+// use rocket::fs::FileServer;
 
-mod interface;
 mod database;
-mod env;
-
+mod interface;
 
 #[launch]
 fn rocket() -> _ {
-    // mount 后面的路径是 /login  /注释的路径的组合
     rocket::build()
+        .mount("/assets", routes![interface::static_files])
         .mount("/", routes![interface::index])
-        .mount("/login", routes![interface::users::login])
-        .mount("/public", FileServer::from("static"))
+        .mount("/api", routes![interface::users::login])
 }

@@ -17,7 +17,7 @@ use crate::database::users::get_users;
  * 2. 从数据库中获取对应的密码
  * 3. 验证并返回结果
  */
-#[get("/")]
+#[get("/login")]
 pub async fn login() -> &'static str {
     get_users().await;
     "hello log in."
