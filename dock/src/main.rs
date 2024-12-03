@@ -2,26 +2,11 @@
 extern crate rocket;
 
 use rocket::fs::FileServer;
-use sqlx::postgres::PgPoolOptions;
 
-// mod database;
 mod interface;
+mod database;
+mod env;
 
-async fn db() -> Result<(), sqlx::Error> {
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect("postgres://postgres:mapinxue@localhost/assets")
-        .await?;
-
-    let row = sqlx::query("select * from users;").fetch_one(&pool).await?;
-
-    println!("any find");
-    println!("Got: {:?}", row);
-
-    // init::get_database();
-
-    Ok(())
-}
 
 #[launch]
 fn rocket() -> _ {

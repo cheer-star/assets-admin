@@ -1,3 +1,5 @@
+use crate::database::users::get_users;
+
 /**
 * 用户子系统功能
 * 1. 用户登陆
@@ -17,5 +19,6 @@
  */
 #[get("/")]
 pub async fn login() -> &'static str {
+    get_users().await;
     "hello log in."
 }
