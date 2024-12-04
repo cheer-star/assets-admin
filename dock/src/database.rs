@@ -1,3 +1,4 @@
+/** 数据库只做数据库操作，逻辑功能等放到上一层 */
 pub mod users;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 

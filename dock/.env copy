@@ -1,0 +1,2 @@
+# change this file name and link to support rust-analyzer
+DATABASE_URL=postgres://database:password@localhost:5432/assets
