@@ -1,14 +1,13 @@
 use super::get_database_pool;
-use std::fmt::{format, Debug};
 
 #[derive(FromForm, sqlx::FromRow, Debug, PartialEq, Eq)]
 pub struct User {
-    account: String,
-    password: String,
+    pub account: String,
+    pub password: String,
 }
 
 /** 在数据处理阶段，不要对输入的数据作处理 */
-pub async fn user_insert(user: User) -> Result<bool, sqlx::Error> {
+pub async fn user_insert(user: User) -> bool {
     let pool = get_database_pool()
         .await
         .expect("connect database failed in user_insert.");
@@ -20,14 +19,14 @@ pub async fn user_insert(user: User) -> Result<bool, sqlx::Error> {
         .await
         .expect("insert user error.");
 
-    Ok(result.rows_affected() > 0)
+    result.rows_affected() > 0
 }
 
 struct Count {
     count: Option<i64>,
 }
 
-pub async fn user_exist(account: String) -> Result<bool, sqlx::Error> {
+pub async fn user_exist(account: String) -> bool {
     let pool = get_database_pool()
         .await
         .expect("connect database failed in user_insert.");
@@ -43,7 +42,7 @@ pub async fn user_exist(account: String) -> Result<bool, sqlx::Error> {
     .count
     .expect("get user count error");
 
-    Ok(result > 0)
+    result > 0
 }
 
 pub async fn user_select(account: Option<String>) -> Vec<User> {
