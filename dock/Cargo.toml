@@ -4,11 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rocket = "0.5.0"
+rocket = { version = "0.5.0", features = ["json"] }
 sqlx = { version = "0.8", features = ["postgres", "runtime-tokio-native-tls"] }
 tokio = { version = "1", features = ["full"] }
 futures = "0.3"
 scrypt = "0.11.0"
+serde = "1.0.215"
+sha256 = "1.5.0"
 
 
 [default]

@@ -1,43 +1,31 @@
-use scrypt::{
-    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
-    Scrypt,
-};
+pub fn password_encrypt(password: String) -> String {
+    let hash = sha256::digest(password);
 
-pub fn password_encrypt(
-    password: String,
-) -> Result<std::string::String, scrypt::password_hash::Error> {
-    let password = password.as_bytes();
-    let salt = SaltString::generate(&mut OsRng);
-
-    let hash: Result<PasswordHash<'_>, scrypt::password_hash::Error> =
-        Scrypt.hash_password(password, &salt);
-
-    println!("{:?}", hash);
-
-    match hash {
-        Ok(value) => {
-            return Ok(value.to_string());
-        }
-        Err(error) => {
-            return Err(error);
-        }
-    }
+    hash
 }
 
-pub fn password_verify(password: String, hash: String) -> Result<bool, scrypt::password_hash::Error> {
-    let parsed_hash;
+pub fn password_verify(password: String, hash: String) -> bool {
+    let v_hash = sha256::digest(password);
 
-    match PasswordHash::new(&hash) {
-        Ok(value) => {
-            parsed_hash = value;
-        }
+    v_hash.eq(&hash)
+}
 
-        Err(error) => {
-            return Err(error);
-        }
+#[cfg(test)]
+mod tests {
+    use crate::utils::{password_encrypt, password_verify};
+
+    #[test]
+    fn test_password_encrypte() {
+        let password = String::from("rust_in_use");
+
+        let hash = password_encrypt(password.clone());
+
+        // result hash is from third party.
+        assert_eq!(
+            hash,
+            String::from("0bf42167cdf8aad9de92815801f93750fc947819935d3c13fc4877f447a876cd")
+        );
+
+        assert!(password_verify(password, hash));
     }
-
-    return Ok(Scrypt
-        .verify_password(password.as_bytes(), &parsed_hash)
-        .is_ok())
 }
