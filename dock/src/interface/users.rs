@@ -3,13 +3,21 @@ use crate::{
     database::users::{self, user_exist, user_insert, user_select, User},
     utils::{password_encrypt, password_verify},
 };
-use rocket::form::Form;
 use rocket::serde::json::Json;
+use rocket::{form::Form, time::Duration};
 
-use super::response::Failed;
+use super::{guard::Auth, response::Failed};
+use rocket::http::{Cookie, CookieJar};
 
 #[post("/create_user", data = "<user>")]
-pub async fn create_user(user: Form<User>) -> Result<(), Json<Failed>> {
+pub async fn create_user(user: Form<User>, a: Auth) -> Result<(), Json<Failed>> {
+    if !a.role.eq("admin") {
+        let e = Failed {
+            message: String::from("[user] only administrators can create user."),
+        };
+        return Err(Json(e));
+    }
+
     let has_user = user_exist(user.account.to_string()).await;
 
     if has_user {
@@ -21,7 +29,7 @@ pub async fn create_user(user: Form<User>) -> Result<(), Json<Failed>> {
 
     let password_after_process = password_encrypt(user.password.to_owned());
 
-    let user_after_process = users::User {
+    let user_after_process: User = users::User {
         account: user.account.to_owned(),
         password: password_after_process,
     };
@@ -39,7 +47,7 @@ pub async fn create_user(user: Form<User>) -> Result<(), Json<Failed>> {
 }
 
 #[post("/login", data = "<user>")]
-pub async fn login(user: Form<User>) -> Result<(), Json<Failed>> {
+pub async fn login(user: Form<User>, cookies: &CookieJar<'_>) -> Result<(), Json<Failed>> {
     let u = user_select(Some(user.account.to_owned())).await;
 
     if u.len() == 0 {
@@ -54,8 +62,33 @@ pub async fn login(user: Form<User>) -> Result<(), Json<Failed>> {
         password_verify(user.password.to_owned(), user_from_db.password.to_string());
 
     if password_correct {
-        // jwt
-        return Ok(());
+        let auth = Auth {
+            account: user.account.to_owned(),
+            role: String::from("admin"),
+        };
+
+        let auth_json = serde_json::to_string(&auth);
+
+        match auth_json {
+            Ok(res) => {
+                let user_cookie = Cookie::build(("user_token", res))
+                    .path("/")
+                    .http_only(false)
+                    .max_age(Duration::days(3))
+                    .secure(false);
+                cookies.add_private(user_cookie);
+                return Ok(());
+            }
+            Err(e) => {
+                let e = Failed {
+                    message: format!(
+                        "[system] Authority to json string error. {:?}",
+                        e.to_string()
+                    ),
+                };
+                return Err(Json(e));
+            }
+        }
     } else {
         let e = Failed {
             message: String::from("[user] password is incorrect."),

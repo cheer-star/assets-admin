@@ -1,0 +1,16 @@
+[default]
+address = "0.0.0.0"
+limits = { form = "64 kB", json = "1 MiB" }
+
+[debug]
+port = 8000
+limits = { json = "10MiB" }
+secret_key = "9OtCJfoP8k1Vm5pIxP21gUmvfzHbAuc7SP49l4oiqtc="
+
+[nyc]
+port = 9001
+
+[release]
+port = 80
+ip_header = false
+secret_key = "hPrYyЭRiMyµ5sBB1π+CMæ1køFsåqKvBiQJxBVHQk="

@@ -1,9 +1,10 @@
-use rocket::{fs::NamedFile, serde::Serialize};
+use rocket::fs::NamedFile;
 use std::path::PathBuf;
 
 // this module for user
-pub mod users;
+pub mod guard;
 pub mod response;
+pub mod users;
 /**
  * this for front end SPA routing.
  */
