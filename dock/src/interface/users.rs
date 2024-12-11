@@ -6,10 +6,13 @@ use crate::{
 use rocket::serde::json::Json;
 use rocket::{form::Form, time::Duration};
 
-use super::{guard::Auth, response::Failed};
+use super::{
+    guard::Auth,
+    response::{Failed, UserInfo},
+};
 use rocket::http::{Cookie, CookieJar};
 
-#[post("/create_user", data = "<user>")]
+#[put("/user", data = "<user>")]
 pub async fn create_user(user: Form<User>, a: Auth) -> Result<(), Json<Failed>> {
     if !a.role.eq("admin") {
         let e = Failed {
@@ -95,4 +98,28 @@ pub async fn login(user: Form<User>, cookies: &CookieJar<'_>) -> Result<(), Json
         };
         return Err(Json(e));
     }
+}
+
+#[get("/user_list")]
+pub async fn get_user_list(a: Auth) -> Result<Json<Vec<UserInfo>>, Json<Failed>> {
+    if !a.role.eq("admin") {
+        let e = Failed {
+            message: String::from("[user] only administrators can create user."),
+        };
+        return Err(Json(e));
+    }
+
+    // 这里做一次格式变换, 将password剔除
+    // 后续将用户信息单建表
+    // 重写这个接口和数据库访问接口
+    let us = user_select(None).await;
+    let mut result: Vec<UserInfo> = Vec::new();
+
+    for u in us {
+        let t = UserInfo { account: u.account };
+
+        result.push(t);
+    }
+
+    Ok(Json(result))
 }

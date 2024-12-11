@@ -4,3 +4,8 @@ use rocket::serde::Deserialize;
 pub struct Failed {
     pub message: String,
 }
+
+#[derive(Deserialize, serde::Serialize, Debug)]
+pub struct UserInfo {
+    pub account: String,
+}
