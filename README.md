@@ -1,5 +1,7 @@
 # 资产管理平台
 
+> ⚠ 此项目暂停更新一段时间, 接下来将更新 https://github.com/creampnx-x/auto-fill
+
 ## 平台架构
 
 ### 服务端
