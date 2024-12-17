@@ -2,6 +2,8 @@
 
 > ⚠ 此项目暂停更新一段时间, 接下来将更新 https://github.com/creampnx-x/auto-fill
 
+> 🖼 于241217重新开始更新。
+
 ## 平台架构
 
 ### 服务端
