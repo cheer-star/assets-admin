@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button"
-import { Link } from "react-router"
+import { Link ,useNavigate } from "react-router"
 import InteractiveHoverButton from "../ui/interactive-hover-button"
 import { GithubIcon } from "../icons"
 
 export default function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className="px-8 py-4 flex justify-between sticky top-0 backdrop-blur-2xl ">
       <div className="flex">
@@ -14,14 +16,22 @@ export default function Home() {
 
       </div>
       <div className="flex">
-        <Link className="relative top-[9px] mr-8" to="/">文档</Link>
+        <Link className="relative top-[9px] mr-8" to="/docs">文档</Link>
         <Link className="relative top-[9px] mr-8" to="/login">关于</Link>
 
-        <Button variant="ghost" size="icon" className="mr-8">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mr-8"
+          onClick={() => window.open('https://github.com/cheer-star/assets-admin')}
+        >
           <GithubIcon />
         </Button>
 
-        <InteractiveHoverButton text="演示" className="h-10"></InteractiveHoverButton>
+        <InteractiveHoverButton
+          text="演示"
+          className="h-10"
+          onClick={() => navigate('/login')} />
       </div>
     </div>
   )
