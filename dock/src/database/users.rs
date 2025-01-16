@@ -1,3 +1,5 @@
+use sqlx::Sqlite;
+
 use super::get_database_pool;
 
 #[derive(FromForm, sqlx::FromRow, Debug, PartialEq, Eq)]

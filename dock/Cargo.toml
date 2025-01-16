@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 rocket = { version = "0.5.0", features = ["json", "secrets"] }
-sqlx = { version = "0.8", features = ["postgres", "runtime-tokio-native-tls"] }
+sqlx = { version = "0.8", features = ["postgres", "runtime-tokio-native-tls", "sqlite"] }
 tokio = { version = "1", features = ["full"] }
 futures = "0.3"
 scrypt = "0.11.0"
